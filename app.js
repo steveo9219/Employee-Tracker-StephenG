@@ -31,18 +31,25 @@ const mainMenu = [
 			switch (answers.mainMenuChoice) {
 				case "View All Employees":
 					viewAllEmployees();
+					break;
 				case "View All Employees By Department":
 					viewAllEmployeesByDepartment();
+					break;
 				case "View All Employees By Manager":
 					viewAllEmployeesByManager();
+					break;
 				case "Add Employee":
 					addEmployee();
+					break;
 				case "Remove Employee":
 					removeEmployee();
+					break;
 				case "Update Employee Role":
 					updateEmployeeRole();
+					break;
 				case "Update Employee Manager":
 					updateEmployeeManager();
+					break;
 			}
 		});
 })();
