@@ -1,26 +1,26 @@
 USE lorem_ipsum_inc;
+-- Departments Table Inserts
+INSERT INTO department (name) VALUES ("Sales");
+INSERT INTO department (name) VALUES ("Finance");
+INSERT INTO department (name) VALUES ("Engineering");
+-- Role Table Inserts
+INSERT INTO role (title, salary, department_id)
+VALUES ('Sales Lead', '80000', '1');
 
-INSERT INTO department (id, name) VALUES (DEFAULT, "Hall of the Arcane");
-INSERT INTO department (id, name) VALUES (DEFAULT, "Warriors Hall");
-INSERT INTO department (id, name) VALUES (DEFAULT, "Crafters Guild");
+INSERT INTO role (title, salary, department_id)
+VALUES ('Accountant', '80000', '2');
 
-INSERT INTO role (id, title, salary, department_id)
-VALUES (DEFAULT, manager, 120000, DEFAULT);
+INSERT INTO role (title, salary, department_id)
+VALUES ('Lead Engineer', '60000', '3');
 
-INSERT INTO role (id, title, salary, department_id)
-VALUES (DEFAULT, darkMage, 80000, DEFAULT);
+-- Employee Table Inserts
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ('John', 'Doe', '1', '1');
 
-INSERT INTO role (id, title, salary, department_id)
-VALUES (DEFAULT, redMage, 60000, DEFAULT);
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ('Mike', 'Chan', '2', '1');
 
-INSERT INTO role (id, title, salary, department_id)
-VALUES (DEFAULT, knight, 650000, DEFAULT);
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ('Kevin', 'Tupik', '3', '1');
 
-INSERT INTO role (id, title, salary, department_id)
-VALUES (DEFAULT, footman, 40000, DEFAULT);
 
-INSERT INTO role (id, title, salary, department_id)
-VALUES (DEFAULT, blacksmith, 50000, DEFAULT);
-
-INSERT INTO role (id, title, salary, department_id)
-VALUES (DEFAULT, enchanter, 90000, DEFAULT);
