@@ -1,10 +1,6 @@
-// const Employee = require("./constructors/Employee");
-// const Department = require("./constructors/Department");
-// const Role = require("./constructors/Role");
 const connection = require("./js/connection");
 const inquirer = require("inquirer");
-const fs = require("fs");
-
+//These are the questions the user will be asked after starting CLI
 const mainMenu = [
 	{
 		type: "list",
@@ -15,13 +11,13 @@ const mainMenu = [
 			"View All Employees By Department",
 			"View All Employees By Manager",
 			"Add Employee",
-			"Remove Employee",
+			"Add Department",
+			"Add Role",
 			"Update Employee Role",
-			"Update Employee Manager",
 		],
 	},
 ];
-
+//These are the questions the user will be asked after choosing add Employee option
 const addEmployeeQuestions = [
 	{
 		type: "input",
@@ -37,13 +33,54 @@ const addEmployeeQuestions = [
 		type: "list",
 		name: "employeeRole",
 		message: "What is the employee's role?",
-		choices: ["1", "Finance", "Engineering"],
+		choices: [1, 2, 3],
 	},
 	{
 		type: "list",
 		name: "employeeManager",
 		message: "Who is the employee's manager?",
-		choices: ["1", "Bob Freedom", "Gingery Bern"],
+		choices: [1, 2, 3],
+	},
+];
+//These are the questions the user will be asked after choosing to update Employee option
+const updateEmployeeQuestions = [
+	{
+		type: "input",
+		name: "employeeId",
+		message: "What is the employee's ID?",
+	},
+	{
+		type: "input",
+		name: "newRole",
+		message: "What is the employee's new role?",
+		choices: [1, 2, 3],
+	},
+];
+//These are the questions the user will be asked after choosing to add Department option
+const addDepartmentQuestions = [
+	{
+		type: "input",
+		name: "newDepartmentName",
+		message: "What is the new department name?",
+	},
+];
+//These are the questions the user will be asked after choosing to add Role option
+const addRoleQuestions = [
+	{
+		type: "input",
+		name: "newRoleTitle",
+		message: "What is the new Title of the Role?",
+	},
+	{
+		type: "input",
+		name: "newRoleSalary",
+		message: "What is the new Salary of the Role?",
+	},
+	{
+		type: "rawlist",
+		name: "newDepartmentId",
+		message: "What is the new department id?",
+		choices: [1, 2, 3],
 	},
 ];
 //inquirer starts and prints questions to console and choices
@@ -65,11 +102,14 @@ inquirer
 			case "Add Employee":
 				addEmployee();
 				break;
+			case "Add Department":
+				addDepartment();
+				break;
+			case "Add Role":
+				addRole();
+				break;
 			case "Update Employee Role":
 				updateEmployeeRole();
-				break;
-			case "Update Employee Manager":
-				updateEmployeeManager();
 				break;
 		}
 	});
@@ -84,6 +124,7 @@ function viewAllEmployees() {
 		}
 	);
 }
+
 //View All Employees by department function
 function viewAllEmployeesByDepartment() {
 	connection.query(
@@ -95,6 +136,7 @@ function viewAllEmployeesByDepartment() {
 	);
 	console.log("viewAllEmployeesByDepartment");
 }
+
 //View All Employees by manager function
 function viewAllEmployeesByManager() {
 	connection.query(
@@ -106,85 +148,61 @@ function viewAllEmployeesByManager() {
 	);
 	console.log("viewAllEmployeesByManager");
 }
+
 //ADD employees function
 function addEmployee() {
-	connection.query("SELECT * FROM employee", function (err, employee) {
-		console.table(employee);
-		if (err) throw err;
-	});
 	inquirer
 		.prompt(addEmployeeQuestions)
 		//
 		.then((employee) => {
 			connection.query(
-				"INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?);",
-				[
-					{
-						first_name: employee.employeeFirstName,
-						last_name: employee.employeeLastName,
-						role_id: employee.employeeRole,
-						manager_id: employee.employeeManager,
-					},
-				]
+				`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${employee.employeeFirstName}", "${employee.employeeLastName}", ${employee.employeeRole}, ${employee.employeeManager});`
+			);
+			console.log(
+				`"Added Employee ${employee.employeeFirstName} to Database!"`
 			);
 		});
 }
-//Update Employees Role function
-function updateEmployeeRole() {
-	// query the database for all employees and their roles
-	connection.query("SELECT * FROM employee", function (err, employees) {
-		if (err) throw err;
-		// once you have them, prompt the user for which they'd like to edit
-		inquirer
-			.prompt([
-				{
-					name: "choice",
-					type: "rawlist",
-					employees: function () {
-						var employeeArray = [];
-						for (var i = 0; i < employees.length; i++) {
-							choiceArray.push(employees[i].firstName + employees[i].lastName);
-						}
-						return employeeArray;
-					},
-					message: "Which employee needs to update role?",
-				},
-				{
-					name: "newRole",
-					type: "list",
-					message: "What is this employee's new role?",
-					choices: [
-						"Sales Lead",
-						"Salesperson",
-						"Lead Engineer",
-						"Software Engineer",
-						"Accountant",
-						"Lawyer",
-					],
-				},
-			])
-			.then(function (answer) {
-				// get the information of the chosen person
-				var chosenEmployee = answer.choice;
-				var newRole = answer.newRole;
-				connection.query(
-					"UPDATE employees SET ? WHERE ?",
-					[
-						{
-							id: chosenEmployee.id,
-							role: newRole,
-						},
-					],
-					function (error) {
-						if (error) throw err;
-						console.log("Employee's role has been updated.");
-						start();
-					}
-				);
-			});
-	});
+
+//ADD department function
+function addDepartment() {
+	inquirer
+		.prompt(addDepartmentQuestions)
+		//
+		.then((newDepartment) => {
+			connection.query(
+				`INSERT INTO department (name) VALUES ('${newDepartment.newDepartmentName}');`
+			);
+			console.log(
+				`"Added department ${newDepartment.newDepartmentName} to Database!"`
+			);
+		});
 }
 
-function updateEmployeeManager() {
-	console.log("updateEmployeeManager");
+//ADD role function
+function addRole() {
+	inquirer
+		.prompt(addRoleQuestions)
+		//
+		.then((newRole) => {
+			connection.query(
+				`INSERT INTO role (title, salary, department_id) VALUES ('${newRole.newRoleTitle}', '${newRole.newRoleSalary}', ${newRole.newDepartmentId});`
+			);
+			console.log(`"Added role ${newRole.newRoleTitle} to Database!"`);
+		});
+}
+
+//Update Employees Role function
+function updateEmployeeRole() {
+	inquirer
+		.prompt(updateEmployeeQuestions)
+		//
+		.then((updateEmployee) => {
+			connection.query(
+				`UPDATE employee SET role_id = ${updateEmployee.newRole} WHERE id = ${updateEmployee.employeeId};`
+			);
+			console.log(
+				`"Changed ${updateEmployee.newRole} to ${updateEmployee.employeeId}"`
+			);
+		});
 }
